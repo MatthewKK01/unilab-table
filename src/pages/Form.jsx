@@ -19,12 +19,25 @@ import {
 function Form() {
   const [data, setData] = useState(mockup);
   const [active, setActive] = useState(false);
-  const [customfilters, setCustomfilters] = useState([
+  const [columnFilters, setColumnFilters] = useState([
     {
-      id: "first_name",
-      value: "Doralynn",
+      id: "status",
+      value: true,
     },
   ]);
+
+  const handleCheckboxChange = (e) => {
+    const { name, checked } = e.target;
+
+    if (name === "active") {
+      setColumnFilters([{ id: "status", value: checked }]);
+    } else if (name === "inactive") {
+      setColumnFilters([{ id: "status", value: !checked }]);
+    } else {
+      // If both are checked, set value to true
+      setColumnFilters([{ id: "status", value: true }]);
+    }
+  };
 
   const columns = [
     {
@@ -63,7 +76,7 @@ function Form() {
     data,
     columns,
     state: {
-      customfilters,
+      columnFilters,
     },
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
@@ -100,11 +113,21 @@ function Form() {
               <h1>სტუდენტის სტატუსი</h1>
               <ul>
                 <li className="flex flex-row gap-4 items-center">
-                  <input type="checkbox" name="active" id="active" />
+                  <input
+                    onChange={handleCheckboxChange}
+                    type="checkbox"
+                    name="active"
+                    id="active"
+                  />
                   <label htmlFor="active">Active</label>
                 </li>
                 <li className="flex flex-row gap-4 items-center">
-                  <input type="checkbox" name="inactive" id="inactive" />
+                  <input
+                    onChange={handleCheckboxChange}
+                    type="checkbox"
+                    name="inactive"
+                    id="inactive"
+                  />
                   <label htmlFor="inactive">Inactive</label>
                 </li>
               </ul>
