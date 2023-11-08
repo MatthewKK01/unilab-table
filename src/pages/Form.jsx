@@ -20,8 +20,8 @@ import {
 
 function Form() {
   const [data, setData] = useState(mockup);
-  const [active, setActive] = useState(false);
 
+  const [active, setActive] = useState(false);
   const [activeChecked, setActiveChecked] = useState(false);
   const [inactiveChecked, setInactiveChecked] = useState(false);
   const [maleChecked, setMaleChecked] = useState(false);
@@ -162,6 +162,7 @@ function Form() {
                     type="checkbox"
                     name="active"
                     id="active"
+                    checked={activeChecked}
                   />
                   <label htmlFor="active">Active</label>
                 </li>
@@ -170,6 +171,7 @@ function Form() {
                     onChange={handleCheckboxChange}
                     type="checkbox"
                     name="inactive"
+                    checked={inactiveChecked}
                     id="inactive"
                   />
                   <label htmlFor="inactive">Inactive</label>
@@ -183,6 +185,7 @@ function Form() {
                     onChange={handleSexChange}
                     type="checkbox"
                     name="male"
+                    checked={maleChecked}
                     id="male"
                   />
                   <label htmlFor="male">მამრობითი</label>
@@ -191,6 +194,7 @@ function Form() {
                   <input
                     onChange={handleSexChange}
                     type="checkbox"
+                    checked={femaleChecked}
                     name="female"
                     id="female"
                   />
