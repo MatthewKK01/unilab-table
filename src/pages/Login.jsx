@@ -1,46 +1,59 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import { useForm } from "react-hook-form";
 
 function Login() {
   const navigate = useNavigate();
+  const [image, setImage] = useState("");
+  const [user, setUser] = useState({
+    image: "",
+    name: "your name",
+  });
+  const schema = yup.object().shape({
+    files: yup.mixed().test("required", "Please select file", (value) => {
+      return value && value.length;
+    }),
+    name: yup.string().required(),
+  });
+  const {
+    register,
+    handleSubmit,
 
-  const [data, setData] = useState();
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
 
-  const handleInputChange = (event) => {
-    const { value } = event.target;
-    setData((prev) => ({
-      ...prev,
-      name: value,
-    }));
+  const convertToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        resolve(reader.result.toString());
+      };
+      reader.readAsDataURL(file);
+    });
   };
 
-  const handleImageChange = (event) => {
-    const file = event.target.files[0];
-    const reader = new FileReader();
-    reader.onload = () => {
-      setData((prev) => ({
-        ...prev,
-        image: reader.result,
-      }));
-    };
-    reader.readAsDataURL(file);
-  };
-
-  const changeHandler = () => {
-    if (data.name && data.image) {
-      localStorage.setItem("user", JSON.stringify(data));
-      navigate("/form");
-    } else {
-      alert("Name and Image are required.");
+  const onSubmit = async (data) => {
+    if (data.files.length > 0) {
+      const image = await convertToBase64(data.files[0]);
+      setUser({
+        image: image,
+        name: data.name,
+      });
+      localStorage.setItem("user", JSON.stringify({ image, name: data.name }));
     }
+    navigate("/form");
   };
 
   return (
     <div className="flex h-full bg-black">
       <form
-        onSubmit={changeHandler}
+        onSubmit={handleSubmit(onSubmit)}
         className="md:w-[588px] sm:w-[350px] flex flex-col items-center justify-center m-auto  h-[688px] bg-white rounded-[25px]"
       >
         <h1 className="text-5xl font-semibold capitalize mb-11">get started</h1>
@@ -67,7 +80,7 @@ function Login() {
         </label>
         <input
           type="file"
-          onChange={handleImageChange}
+          {...register("files")}
           id="img-upload"
           className="hidden"
         />
@@ -78,20 +91,20 @@ function Login() {
         <input
           id="name"
           required
-          onChange={handleInputChange}
+          {...register("name")}
           className="mb-[76px] md:w-[487px]  md:p-[22px] bg-[#E6EBFF] sm:w-[300px] sm:p-4"
           placeholder="your name"
           type="text"
         />
-
-        <button
+        {errors.files && <span>{errors.files.message}</span>}
+        <input
+          type="submit"
+          value={"Sign in"}
           className="capitalize 
            text-white font-normal text-2xl rounded-[50px]
              bg-[#4980C0]
             w-[395px] h-[74px]"
-        >
-          sign in
-        </button>
+        />
       </form>
     </div>
   );

@@ -18,14 +18,16 @@ function Header() {
         <Link to={"/api"}>
           <h1 className="text-white text-5xl cursor-pointer uppercase">API</h1>
         </Link>
-        <div className="flex pl-7 py-6 border-l-2 items-center justify-center gap-5">
-          <p className="  text-white font-light text-[22px]">{user.name}</p>
-          <img
-            src={user.image}
-            className="w-[68px] h-[68px] rounded-full"
-            alt="photo"
-          />
-        </div>
+        <Link to={"/form"}>
+          <div className="flex pl-7 py-6 border-l-2 items-center justify-center gap-5">
+            <p className="  text-white font-light text-[22px]">{user.name}</p>
+            <img
+              src={user.image}
+              className="w-[68px] h-[68px] rounded-full"
+              alt="photo"
+            />
+          </div>
+        </Link>
       </nav>
     </header>
   );
