@@ -7,6 +7,10 @@
 import mockup from "../assets/mockData.json";
 import Header from "../components/Header";
 import filter from "../assets/filter.svg";
+import chevrons_left from "../assets/chevrons-left.svg";
+import chevron_left from "../assets/chevron-left.svg";
+import chevron_right from "../assets/chevron-right.svg";
+import chevrons_right from "../assets/chevrons-right.svg";
 import { Box } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import {
@@ -20,7 +24,7 @@ import {
 function Form() {
   const [data, setData] = useState(mockup);
   const [active, setActive] = useState(false);
-  const [columnFilters, setColumnFilters] = useState([]);
+
   const [activeChecked, setActiveChecked] = useState(false);
   const [inactiveChecked, setInactiveChecked] = useState(false);
   const [maleChecked, setMaleChecked] = useState(false);
@@ -46,6 +50,7 @@ function Form() {
     setData(filteredData);
   }, [activeChecked, inactiveChecked, maleChecked, femaleChecked]);
 
+  //checkbox hanlder for status
   const handleCheckboxChange = (e) => {
     const { name, checked } = e.target;
 
@@ -55,6 +60,8 @@ function Form() {
       setInactiveChecked(checked);
     }
   };
+
+  // checkboxes for sex
   const handleSexChange = (e) => {
     const { name, checked } = e.target;
 
@@ -117,14 +124,12 @@ function Form() {
   const table = useReactTable({
     data,
     columns,
-    state: {
-      columnFilters,
-    },
     getPaginationRowModel: getPaginationRowModel(),
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
   });
   console.log(table.getHeaderGroups());
+  const currentPageIndex = table.getState().pagination.pageIndex + 1;
   return (
     <div className="bg-black h-full">
       <Header />
@@ -211,8 +216,13 @@ function Form() {
               ))}
             </thead>
             <tbody>
-              {table.getRowModel().rows.map((row) => (
-                <tr className="tr p-2" key={row.id}>
+              {table.getRowModel().rows.map((row, index) => (
+                <tr
+                  className={` p-2
+                    ${index % 2 === 0 ? "bg-black bg-opacity-10" : ""}
+                  `}
+                  key={row.id}
+                >
                   {row.getVisibleCells().map((cell) => (
                     <td className={`p-2`} key={cell.id}>
                       {flexRender(
@@ -225,25 +235,55 @@ function Form() {
               ))}
             </tbody>
           </table>
-          <p className="text-white text-center mb-2 mx-auto">
-            {table.getState().pagination.pageIndex + 1} / {table.getPageCount()}
+          <p className="text-white text-center mb-2 mx-auto mt-5">
+            <div className="flex justify-center items-center gap-3">
+              <div className="left-buttons flex justify-center items-center  ">
+                <button
+                  onClick={() => table.setPageIndex(0)}
+                  disabled={!table.getCanPreviousPage()}
+                  className=" text-white rounded-md"
+                >
+                  <img src={chevrons_left} alt="" />
+                </button>
+                <button
+                  onClick={() => table.previousPage()}
+                  disabled={!table.getCanPreviousPage()}
+                  className=" text-white rounded-md"
+                >
+                  <img src={chevron_left} alt="" />
+                </button>
+              </div>
+              {table.getPageOptions().map((number) => (
+                <p
+                  key={number}
+                  className={`${
+                    number + 1 === currentPageIndex
+                      ? `font-bold underline`
+                      : "font-normal"
+                  }`}
+                >
+                  {number + 1}
+                </p>
+              ))}
+              <div className="right-buttons flex justify-center items-center ">
+                <button
+                  onClick={() => table.nextPage()}
+                  disabled={!table.getCanNextPage()}
+                  className=" text-white  rounded-md"
+                >
+                  <img src={chevron_right} alt="" />
+                </button>
+                <button
+                  onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+                  disabled={!table.getCanNextPage()}
+                  className=" text-white  rounded-md"
+                >
+                  <img src={chevrons_right} alt="" />
+                </button>
+              </div>
+            </div>
           </p>
-          <div className="buttons flex justify-center items-center gap-2">
-            <button
-              onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
-              className="border-white border text-white p-2 rounded-md"
-            >
-              &lt;
-            </button>
-            <button
-              onClick={() => table.nextPage()}
-              disabled={!table.getCanNextPage()}
-              className="border-white border text-white p-2 rounded-md"
-            >
-              &gt;
-            </button>
-          </div>
+          <div className="buttons "></div>
         </div>
       </section>
     </div>
