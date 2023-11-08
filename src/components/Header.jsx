@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 function Header() {
   const user = JSON.parse(localStorage.getItem("user"));
-  console.log(user);
+
   const LogOut = () => {
     localStorage.clear();
   };
