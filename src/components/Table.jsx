@@ -14,6 +14,9 @@ import {
 
 function Table({ table }) {
   const currentPageIndex = table.getState().pagination.pageIndex + 1;
+  const changePage = (pageIndex) => {
+    table.setPageIndex(pageIndex - 1);
+  };
 
   return (
     <>
@@ -68,7 +71,8 @@ function Table({ table }) {
           {table.getPageOptions().map((number) => (
             <p
               key={number}
-              className={`${
+              onClick={() => changePage(number + 1)}
+              className={`cursor-pointer ${
                 number + 1 === currentPageIndex
                   ? `font-bold underline`
                   : "font-normal"
