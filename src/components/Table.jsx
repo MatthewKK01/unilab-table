@@ -38,7 +38,7 @@ function Table({ table }) {
               key={row.id}
             >
               {row.getVisibleCells().map((cell) => (
-                <td className={`p-2`} key={cell.id}>
+                <td className={`p-2 py-4 truncate`} key={cell.id}>
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>
               ))}
